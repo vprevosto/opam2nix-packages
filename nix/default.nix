@@ -164,7 +164,7 @@ let
 
 		buildOpamRepo = { package, version, src, opamFile ? null }:
 			let opamFileSh = defaulted opamFile (lib.concatStringsSep ";" [
-				"$(if [ -e '${package}.opam' ]; then echo '${package}.opam'"
+				"$(if [ -e '${src}/${package}.opam' ]; then echo '${package}.opam'"
 				"else echo opam"
 				"fi)"
 			]); in
@@ -178,11 +178,11 @@ let
 					dest="$out/packages/${package}/${package}.${version}"
 					mkdir -p "$dest"
 					opamFile="${opamFileSh}"
-					if ! [ -n "$opamFile" -a -e "$opamFile" ]; then
+					if ! [ -n "$opamFile" -a -e "${src}/$opamFile" ]; then
 						echo 'Error: opam file (`${package}.opam` or `opam`) not found in ${src}'
 						exit 1
 					fi
-					cp "$opamFile" "$dest/opam"
+					cp "${src}/$opamFile" "$dest/opam"
 					if [ -f "${src}" ]; then
 						echo 'archive: "${src}"' > "$dest/url"
 					else
